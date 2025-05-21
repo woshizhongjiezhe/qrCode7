@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>杭州零界人工智能科技有限公司 - SingularityX Evolution</title>
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        /* 加载动画 */
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        /* 主内容区 */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+        
+        /* 标题和导航 */
+        header {
+            position: relative;
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+        
+        .company-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #0CFF6B;
+            text-shadow: 0 0 10px rgba(12, 255, 107, 0.5);
+        }
+        
+        .company-slogan {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #dddddd;
+        }
+        
+        /* 视频区域 */
+        .video-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 40px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(12, 255, 107, 0.3);
+        }
+        
+        .placeholder-video {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(45deg, #0a1a0a, #0a3a1a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #0CFF6B;
+            font-size: 1.5rem;
+            position: relative;
+        }
+        
+        .play-button {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(12, 255, 107, 0.2);
+            border: 2px solid #0CFF6B;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .play-button:before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-left: 25px solid #0CFF6B;
+            border-bottom: 15px solid transparent;
+            margin-left: 5px;
+        }
+        
+        /* 章节样式 */
+        section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: rgba(10, 20, 10, 0.6);
+            border-radius: 12px;
+            border-left: 4px solid #0CFF6B;
+            backdrop-filter: blur(10px);
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            color: #0CFF6B;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2:before {
+            content: '';
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: #0CFF6B;
+            margin-right: 12px;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+        
+        h3 {
+            font-size: 1.2rem;
+            color: #0CFF6B;
+            margin: 20px 0 10px;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        h3:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 18px;
+            background: #0CFF6B;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: #cccccc;
+            text-align: justify;
+        }
+        
+        ul {
+            list-style-type: none;
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 20px;
+            color: #bbbbbb;
+        }
+        
+        li:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 8px;
+            height: 8px;
+            background: #0CFF6B;
+            border-radius: 50%;
+        }
+        
+        strong {
+            color: #0CFF6B;
+            font-weight: 600;
+        }
+        
+        /* 招聘部分 */
+        .job-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .job-card {
+            background: rgba(20, 30, 20, 0.7);
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .job-card:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            background: #0CFF6B;
+            clip-path: polygon(100% 0, 0 0, 100% 100%);
+        }
+        
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(12, 255, 107, 0.15);
+        }
+        
+        /* 愿景部分 */
+        .vision-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(10, 25, 15, 0.9), rgba(5, 15, 10, 0.8));
+            box-shadow: 0 0 20px rgba(12, 255, 107, 0.2);
+        }
+        
+        .vision-container:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(12, 255, 107, 0.1) 0%, transparent 60%);
+            z-index: -1;
+            animation: pulse 15s infinite linear;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(0.8); opacity: 0.5; }
+        }
+        
+        /* 团队结构图 */
+        .team-structure {
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+            background: rgba(10, 15, 10, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            color: #0CFF6B;
+            font-size: 0.85rem;
+            margin: 20px 0;
+        }
+        
+        /* 联系我们 */
+        .contact-container {
+            background: rgba(15, 30, 15, 0.7);
+            padding: 25px;
+            border-radius: 12px;
+            border-right: 4px solid #0CFF6B;
+            position: relative;
+        }
+        
+        .contact-container:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            background: rgba(12, 255, 107, 0.1);
+            border-radius: 0 0 12px 0;
+        }
+        
+        .contact-method {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(12, 255, 107, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            color: #0CFF6B;
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-info p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .contact-info .highlight {
+            color: #0CFF6B;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 40px 0 20px;
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 40px;
+            position: relative;
+        }
+        
+        footer:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #0CFF6B, transparent);
+        }
+        
+        /* 动画和效果 */
+        .glow-effect {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(12, 255, 107, 0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(20px);
+            opacity: 0.5;
+            z-index: -1;
+            animation: float 10s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(50px, 30px); }
+            50% { transform: translate(0, 60px); }
+            75% { transform: translate(-50px, 30px); }
+        }
+        
+        /* 响应式设计 */
+        @media (min-width: 768px) {
+            .company-name {
+                font-size: 2.5rem;
+            }
+            
+            .company-slogan {
+                font-size: 1.5rem;
+            }
+            
+            .placeholder-video {
+                height: 300px;
+            }
+            
+            .job-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载动画 -->
+    <div class="loader-wrapper" id="loader">
+        <canvas id="starCanvas"></canvas>
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="container" id="content">
+        <header>
+            <h1 class="company-name">杭州零界人工智能科技有限公司</h1>
+            <p class="company-slogan">SingularityX Evolution - 用AI改写金融系统的演化逻辑</p>
+        </header>
+        
+        <!-- 视频区域 -->
+        <div class="video-container">
+            <div class="placeholder-video">
+                <div class="play-button"></div>
+                <span>AI金融科技创新视频</span>
+            </div>
+        </div>
+        
+        <!-- 公司介绍 -->
+        <section>
+            <h2>我们是谁</h2>
+            <p><strong>零界演化科技</strong>正在构建一套以<strong>加速回报定律</strong>为基础的AI驱动量化交易系统，我们不是做工具，而是在建造一个<strong>"自我成长的金融生命体"</strong>。</p>
+            <p>我们的目标是打造一个具备：</p>
+            <ul>
+                <li>策略自动生成与进化能力</li>
+                <li>智能体级别的博弈与部署结构</li>
+                <li>面向实盘执行的高频/中频交易引擎</li>
+                <li>长期可自演化的金融智能生态系统</li>
+            </ul>
+        </section>
+        
+        <!-- 招聘信息 -->
+        <section>
+            <h2>热招岗位</h2>
+            <div class="job-section">
+                <div class="job-card">
+                    <h3>强化学习研究工程师（策略演化方向）</h3>
+                    <ul>
+                        <li>构建自博弈、AlphaZero式智能体演化系统</li>
+                        <li>熟悉 PPO/SAC/DDPG/Evolutionary Search等算法</li>
+                        <li>RLlib/Stable Baselines3/PyTorch 实战经验优先</li>
+                    </ul>
+                </div>
+                
+                <div class="job-card">
+                    <h3>DevOps/交易系统架构工程师</h3>
+                    <ul>
+                        <li>搭建GPU训练调度与低延迟实盘执行系统</li>
+                        <li>精通容器化部署(Docker/Kubernetes)</li>
+                        <li>有交易所接入与高可用系统经验者优先</li>
+                    </ul>
+                </div>
+                
+                <div class="job-card">
+                    <h3>AI产品经理/项目协调官(TPM)</h3>
+                    <ul>
+                        <li>管理策略引擎与执行系统协同开发</li>
+                        <li>熟悉AI项目流程与量化金融语境</li>
+                        <li>可作为CEO/CTO技术接口管理人</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 团队结构 -->
+        <section>
+            <h2>我们的架构图</h2>
+            <div class="team-structure">
+ CTO
+├─策略硏究组(RL+自博弈)
+│  ├─强化学习研究员x2
+│  └─智能体仿真开发x1
+├─策略工程组(量化执行)
+│  ├─Alpha策略工程师x2
+│  └─数据因子工程师x1
+├─系统架构组(实盘执行)
+│  ├─Devops/架构师x1
+│  └─后端开发x1
+└─AI项目协调/产品x1
+            </div>
+        </section>
+        
+        <!-- 公司愿景 -->
+        <section>
+            <h2>我们的愿景</h2>
+            <div class="vision-container">
+                <p class="vision-text" style="font-size: 1.3rem; text-align: center; color: #0CFF6B; font-weight: 600;">
+                    "构建一个演化速度超过市场适应速度的智能体金融系统"
+                </p>
+                <p style="text-align: center;">我们相信，未来的金融不是人设规则，而是AI设法则。</p>
+                <p style="text-align: center;">我们在打造这个"AI金融生命体"，让它学会成长、对抗、适应与赚钱。</p>
+            </div>
+        </section>
+        
+        <!-- 联系方式 -->
+        <section class="contact-container">
+            <h2>加入我们</h2>
+            <p>我们诚邀各路人才加入零界演化科技，共同打造未来金融AI生态。</p>
+            
+            <div class="contact-method">
+                <div class="contact-icon">✉️</div>
+                <div class="contact-info">
+                    <p>应聘邮箱</p>
+                    <p class="highlight">hanxiaoxuan@wereen.com</p>
+                    <p style="font-size: 0.8rem;">(请注明：姓名+应聘岗位)</p>
+                </div>
+            </div>
+            
+            <div class="contact-method">
+                <div class="contact-icon">👩</div>
+                <div class="contact-info">
+                    <p>联系人</p>
+                    <p class="highlight">韩女士: 15275423180</p>
+                    <p class="highlight">王女士: 18663979512</p>
+                </div>
+            </div>
+            
+            <div class="contact-method">
+                <div class="contact-icon">☎️</div>
+                <div class="contact-info">
+                    <p>联系电话</p>
+                    <p class="highlight">0532-55673088</p>
+                </div>
+            </div>
+        </section>
+        
+        <div class="glow-effect" style="top: 30%; left: 20%;"></div>
+        <div class="glow-effect" style="top: 60%; left: 70%;"></div>
+        <div class="glow-effect" style="top: 80%; left: 30%;"></div>
+        
+        <footer>
+            <p>© 2025 杭州零界人工智能科技有限公司 - SingularityX Evolution</p>
+            <p>官网建设中: https://www.singularityx.ai</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 星空动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('starCanvas');
+            const ctx = canvas.getContext('2d');
+            const loader = document.getElementById('loader');
+            const content = document.getElementById('content');
+            
+            // 设置canvas尺寸
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // 星星参数
+            const stars = [];
+            const numStars = 800;
+            let centerX = canvas.width / 2;
+            let centerY = canvas.height / 2;
+            
+            // 创建星星
+            for (let i = 0; i < numStars; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    z: Math.random() * 2,
+                    r: Math.random() * 1.5,
+                    vx: 0,
+                    vy: 0,
+                    state: 'random', // random, converging, forming
+                    destX: 0,
+                    destY: 0
+                });
+            }
+            
+            let startTime = Date.now();
+            const animationDuration = 2500; // 毫秒
+            
+            // 动画函数
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // 计算动画进度
+                const now = Date.now();
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / animationDuration, 1);
+                
+                // 更新星星状态
+                if (progress < 0.4) {
+                    // 随机运动
+                    for (const star of stars) {
+                        star.state = 'random';
+                    }
+                } else if (progress < 0.8) {
+                    // 开始收敛
+                    for (const star of stars) {
+                        if (star.state === 'random') {
+                            star.state = 'converging';
+                            // 计算目标位置（朝向中心点但有随机偏移）
+                            const angle = Math.random() * Math.PI * 2;
+                            const distance = Math.random() * 50 + 20;
+                            star.destX = centerX + Math.cos(angle) * distance;
+                            star.destY = centerY + Math.sin(angle) * distance;
+                        }
+                    }
+                } else {
+                    // 形成球体
+                    for (const star of stars) {
+                        star.state = 'forming';
+                    }
+                }
+                
+                // 更新和绘制星星
+                for (const star of stars) {
+                    // 根据状态更新位置
+                    if (star.state === 'random') {
+                        star.x += (Math.random() - 0.5) * 2;
+                        star.y += (Math.random() - 0.5) * 2;
+                    } else if (star.state === 'converging') {
+                        // 向目标位置移动
+                        star.x += (star.destX - star.x) * 0.05;
+                        star.y += (star.destY - star.y) * 0.05;
+                    } else if (star.state === 'forming') {
+                        // 围绕中心旋转并形成球体
+                        const dx = star.x - centerX;
+                        const dy = star.y - centerY;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (dist > 5) {
+                            const angle = Math.atan2(dy, dx) + 0.02;
+                            const targetDist = Math.min(dist, 80);
+                            star.x = centerX + Math.cos(angle) * targetDist;
+                            star.y = centerY + Math.sin(angle) * targetDist;
+                        }
+                    }
+                    
+                    // 绘制星星
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+                    
+                    // 星星的颜色根据状态变化
+                    if (star.state === 'random') {
+                        ctx.fillStyle = `rgba(255, 255, 255, ${0.5 + star.z * 0.5})`;
+                    } else if (star.state === 'converging') {
+                        ctx.fillStyle = `rgba(200, 255, 220, ${0.6 + star.z * 0.4})`;
+                    } else {
+                        ctx.fillStyle = `rgba(12, 255, 107, ${0.7 + star.z * 0.3})`;
+                    }
+                    
+                    ctx.fill();
+                }
+                
+                // 如果动画结束，隐藏加载界面并显示内容
+                if (progress >= 1) {
+                    setTimeout(() => {
+                        loader.style.opacity = 0;
+                        content.style.opacity = 1;
+                        setTimeout(() => {
+                            loader.style.display = 'none';
+                        }, 500);
+                    }, 100);
+                    return;
+                }
+                
+                requestAnimationFrame(animate);
+            }
+            
+            // 开始动画
+            animate();
+            
+            // 响应窗口大小变化
+            window.addEventListener('resize', function() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                centerX = canvas.width / 2;
+                centerY = canvas.height / 2;
+            });
+        });
+    </script>
+</body>
+</html>
